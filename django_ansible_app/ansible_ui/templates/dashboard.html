@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center">
+    <h1>Welcome to Ansible UI</h1>
+    <p>Manage playbooks, inventories, and job execution all from one interface.</p>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a href="{% url 'playbook_list' %}" class="btn btn-primary btn-block">Manage Playbooks</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'inventory_list' %}" class="btn btn-secondary btn-block">Manage Inventories</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'jobs_list' %}" class="btn btn-secondary btn-block">Manage Jobs</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Upload Playbook</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Playbook Name</label>
+        {{ form.name }}
+    </div>
+    <div class="mb-3">
+        <label for="id_file" class="form-label">Playbook File</label>
+        {{ form.file }}
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <a href="{% url 'playbook_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

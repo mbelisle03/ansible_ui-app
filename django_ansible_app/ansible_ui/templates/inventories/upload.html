@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Upload Inventory</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.name.label_tag }} <!-- Field label -->
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <div class="text-danger small">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <div class="text-danger small">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    {{ form.file.label_tag }}
+                    {{ form.file }}
+                    {% if form.file.errors %}
+                    <div class="text-danger small">{{ form.file.errors }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-success w-100">Upload Inventory</button>
+            </form>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Back to Inventory List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

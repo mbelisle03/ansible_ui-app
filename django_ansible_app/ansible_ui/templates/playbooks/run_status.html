@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Playbook Execution</h1>
+<p>Your playbook execution has been initiated. Task ID: {{ task_id }}</p>
+<a href="{% url 'playbook_list' %}">Back to Playbooks</a>
+{% endblock %}

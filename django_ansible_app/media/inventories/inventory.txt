@@ -1,0 +1,6 @@
+[routers]
+192.168.1.1 ansible_user=admin ansible_password=password
+192.168.1.2 ansible_user=admin ansible_password=password
+
+[switches]
+192.168.1.3 ansible_user=admin ansible_password=password

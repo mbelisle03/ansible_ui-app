@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Inventories</h1>
+<a href="{% url 'inventory_upload' %}" class="btn btn-primary mb-3">Upload New Inventory</a>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Uploaded At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for inventory in inventories %}
+        <tr>
+            <td>{{ inventory.name }}</td>
+            <td>{{ inventory.description }}</td>
+            <td>{{ inventory.uploaded_at }}</td>
+            <td><a href="{{ inventory.file.url }}" download>Download</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No inventories available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2>Job Details</h2>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">Job ID: {{ job.id }}</h4>
+            <p class="card-text"><strong>Playbook:</strong> {{ job.playbook.name }}</p>
+            <p class="card-text"><strong>Description:</strong> {{ job.playbook.description }}</p>
+            <p class="card-text"><strong>Status:</strong> 
+                <span class="badge {% if job.status == 'Success' %}bg-success{% elif job.status == 'Failed' %}bg-danger{% else %}bg-secondary{% endif %}">
+                    {{ job.status }}
+                </span>
+            </p>
+            <p class="card-text"><strong>Executed At:</strong> {{ job.executed_at|date:"Y-m-d H:i:s" }}</p>
+            <p class="card-text"><strong>Output:</strong></p>
+            <pre class="bg-light p-3 border rounded">{{ job.output }}</pre>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'jobs_list' %}" class="btn btn-secondary">Back to Jobs</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

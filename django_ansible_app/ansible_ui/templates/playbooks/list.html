@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Playbooks</h2>
+<a href="{% url 'playbook_upload' %}" class="btn btn-success mb-3">Upload Playbook</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Uploaded On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for playbook in playbooks %}
+<tr>
+    <td>{{ playbook.name }}</td>
+    <td>{{ playbook.description }}</td>
+    <td>{{ playbook.uploaded_at }}</td>
+    <td>
+        <a href="{% url 'run_playbook' playbook.id %}" class="btn btn-primary">Run</a>
+        <a href="{{ playbook.file.url }}" class="btn btn-secondary">Download</a>
+    </td>
+</tr>
+{% endfor %}
+    </tbody>
+</table>
+{% endblock %}

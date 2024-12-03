@@ -1,0 +1,36 @@
+---
+- name: Configure VLANs on Cisco Devices
+  hosts: cisco_devices
+  gather_facts: no
+  tasks:
+    - name: Create VLANs
+      ansible.network.ios.ios_vlan:
+        vlan_id: "{{ item.id }}"
+        name: "{{ item.name }}"
+        state: present
+      loop:
+        - { id: 10, name: "Accounting" }
+        - { id: 20, name: "HR" }
+        - { id: 30, name: "Engineering" }
+      register: vlan_result
+
+    - name: Show VLAN configuration
+      ansible.builtin.debug:
+        var: vlan_result
+
+    - name: Assign VLAN to interfaces
+      ansible.network.ios.ios_config:
+        lines:
+          - interface {{ item.interface }}
+          - switchport mode access
+          - switchport access vlan {{ item.vlan_id }}
+        state: present
+      loop:
+        - { interface: "GigabitEthernet0/1", vlan_id: 10 }
+        - { interface: "GigabitEthernet0/2", vlan_id: 20 }
+        - { interface: "GigabitEthernet0/3", vlan_id: 30 }
+      register: interface_result
+
+    - name: Show interface configuration
+      ansible.builtin.debug:
+        var: interface_result
