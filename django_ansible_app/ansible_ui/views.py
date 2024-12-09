@@ -21,9 +21,13 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import subprocess
 import json
+import logging
+
 
 class CustomLoginView(auth_views.LoginView):
     template_name = 'login.html'
+
+logger = logging.getLogger("ansible_ui")    
 
 def form_invalid(self, form):
     messages.error(self.request, "Login failed. Please try again.")
@@ -76,14 +80,17 @@ def create_job(request):
     """
     View to create a new job by selecting a playbook and inventory.
     """
+    
+    logger.info("We are in the create job function" )
+    
     if request.method == 'POST':
         form = JobForm(request.POST)
         if form.is_valid():
             job = form.save(commit=False)  # Create the job instance but don't save to the database yet
             
             # Start the Celery task and get the task_id
-            task = run_ansible_task.delay(job.playbook.file.path, job.inventory.file.path, job.id)
-            job.task_id = task.id  # Set the task_id
+            # task = run_ansible_task(job.playbook.file.path, job.inventory.file.path, job.id)
+            # job.task_id = task.id  # Set the task_id
             
             job.save()  # Now save the job instance
             messages.success(request, 'Job created successfully.')
@@ -104,7 +111,7 @@ def execute_job(request, job_id):
     job.save()
 
     # Start the Celery task and fetch its response
-    result = run_ansible_task.delay(playbook_path, inventory_path, job.id)
+    result = run_ansible_task(playbook_path, inventory_path, job.id)
     messages.success(request, f"Execution of Job {job.id} started. Check back for the result.")
 
     # Redirect to the job detail page
@@ -152,6 +159,9 @@ def edit_playbook(request, playbook_id):
 @shared_task
 def run_ansible_task(playbook_path, inventory_path, job_id):
     try:
+        
+        logger.info("Running ansible task")
+        
         # Run the Ansible playbook command
         process = subprocess.Popen(
             ['ansible-playbook', playbook_path, '-i', inventory_path, '--extra-vars', 'ansible_python_interpreter=/usr/bin/python3'],
@@ -159,8 +169,14 @@ def run_ansible_task(playbook_path, inventory_path, job_id):
             stderr=subprocess.PIPE,
             text=True
         )
+        
+        logger.info("Starting the sub process")
+        
         stdout, stderr = process.communicate()
-
+        
+        logger.info("STDOUT is %s", json.dumps(stdout))
+        logger.info("STDERR is %s", json.dumps(stderr))        
+        
         # Parse the JSON output from Ansible if possible
         output = {"stdout": stdout, "stderr": stderr}
         try:
@@ -173,10 +189,13 @@ def run_ansible_task(playbook_path, inventory_path, job_id):
         job = Job.objects.get(id=job_id)
         job.output = json.dumps(output, indent=2)  # Store the JSON output
         job.status = "Success" if process.returncode == 0 else "Failed"
+        # job.task_id = task.id  # Set the task_id
         job.save()
 
+        logger.info("Process executed and returning output %s", json.dumps(output))
         return output
     except Exception as e:
+        logger.error("Error running Ansible task: %s", e)
         return {"error": str(e)}
 
 @login_required
