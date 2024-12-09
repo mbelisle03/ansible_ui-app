@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ansible_ui',
+    'channels',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -52,10 +54,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'django_ansible_app.urls'
 
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,13 +67,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.static', 
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'django_ansible_app.wsgi.application'
-
+ASGI_APPLICATION = 'django_ansible_app.asgi.application' 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -116,12 +121,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Redirect URLs
 LOGIN_REDIRECT_URL = 'dashboard'  # Redirect after login
@@ -135,6 +147,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Celery settings
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL for Redis as a message broker
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'  # Install django-celery-results
 CELERY_ACCEPT_CONTENT = ['json']  # Content formats accepted
 CELERY_TASK_SERIALIZER = 'json'  # Serialization format
 

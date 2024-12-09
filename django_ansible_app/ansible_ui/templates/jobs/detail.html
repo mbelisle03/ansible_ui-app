@@ -9,18 +9,24 @@
         <div class="card-body">
             <h4 class="card-title">Job ID: {{ job.id }}</h4>
             <p class="card-text"><strong>Playbook:</strong> {{ job.playbook.name }}</p>
-            <p class="card-text"><strong>Description:</strong> {{ job.playbook.description }}</p>
             <p class="card-text"><strong>Status:</strong> 
                 <span class="badge {% if job.status == 'Success' %}bg-success{% elif job.status == 'Failed' %}bg-danger{% else %}bg-secondary{% endif %}">
                     {{ job.status }}
                 </span>
             </p>
             <p class="card-text"><strong>Executed At:</strong> {{ job.executed_at|date:"Y-m-d H:i:s" }}</p>
-            <p class="card-text"><strong>Output:</strong></p>
+
+            <h5>Output:</h5>
+            <pre class="bg-light p-3 border rounded">
+                {{ job.output|default:"No output available yet." }}
+            </pre>
             <pre class="bg-light p-3 border rounded">{{ job.output }}</pre>
-        </div>
-        <div class="card-footer text-end">
-            <a href="{% url 'jobs_list' %}" class="btn btn-secondary">Back to Jobs</a>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Terminate Job</button>
+                <a href="{% url 'jobs_list' %}" class="btn btn-secondary">Back to Job List</a>
+            </form>
         </div>
     </div>
 </div>
