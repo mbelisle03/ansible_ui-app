@@ -87,11 +87,6 @@ def create_job(request):
         form = JobForm(request.POST)
         if form.is_valid():
             job = form.save(commit=False)  # Create the job instance but don't save to the database yet
-            
-            # Start the Celery task and get the task_id
-            # task = run_ansible_task(job.playbook.file.path, job.inventory.file.path, job.id)
-            # job.task_id = task.id  # Set the task_id
-            
             job.save()  # Now save the job instance
             messages.success(request, 'Job created successfully.')
             return redirect('jobs_list')  # Redirect to the jobs list
@@ -139,7 +134,7 @@ def playbook_upload(request):
 class PlaybookEditForm(forms.ModelForm):
     class Meta:
         model = Playbook
-        fields = ['name', 'description', 'file']  # Include fields you want to edit
+        fields = ['name', 'description', 'file'] 
 
 @login_required
 def edit_playbook(request, playbook_id):
@@ -189,7 +184,6 @@ def run_ansible_task(playbook_path, inventory_path, job_id):
         job = Job.objects.get(id=job_id)
         job.output = json.dumps(output, indent=2)  # Store the JSON output
         job.status = "Success" if process.returncode == 0 else "Failed"
-        # job.task_id = task.id  # Set the task_id
         job.save()
 
         logger.info("Process executed and returning output %s", json.dumps(output))
@@ -197,21 +191,6 @@ def run_ansible_task(playbook_path, inventory_path, job_id):
     except Exception as e:
         logger.error("Error running Ansible task: %s", e)
         return {"error": str(e)}
-
-@login_required
-def run_playbook(request, playbook_id):
-    playbook = get_object_or_404(Playbook, id=playbook_id)
-    inventory_path = '/media/inventories/inventory.txt'  # Update with your inventory file path
-    playbook_path = playbook.file.path
-
-    # Trigger the Celery task
-    result = execute_playbook.delay(playbook_path, inventory_path)
-
-    # Update last run time
-    playbook.last_run_at = now()
-    playbook.save()
-
-    return render(request, 'playbooks/run_status.html', {'task_id': result.id})
 
 def terminate_task(task_id):
     result = AsyncResult(task_id)

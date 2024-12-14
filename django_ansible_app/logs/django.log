@@ -2,3 +2,5 @@ ERROR 2024-12-09 12:00:41,340 basehttp "GET /jobs/create/ HTTP/1.1" 500 77017
 ERROR 2024-12-09 12:00:42,463 basehttp "GET /jobs/create/ HTTP/1.1" 500 77017
 ERROR 2024-12-09 12:10:40,555 views Error running Ansible task: Job matching query does not exist.
 ERROR 2024-12-09 12:10:40,656 basehttp "POST /jobs/create/ HTTP/1.1" 500 79001
+WARNING 2024-12-10 21:43:13,378 basehttp "GET /favicon.ico HTTP/1.1" 404 5868
+WARNING 2024-12-14 08:15:53,659 basehttp "GET /favicon.ico HTTP/1.1" 404 5868

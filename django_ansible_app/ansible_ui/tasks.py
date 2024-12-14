@@ -50,7 +50,7 @@ def run_ansible_task(playbook_path, inventory_path, job_id):
     process.stdout.close()
     process.wait()
 
-    # Optionally, update the job status in the database after completion
+    # Update the job status in the database after completion
     job = Job.objects.get(id=job_id)
     if process.returncode == 0:
         job.status = 'Success'
@@ -67,12 +67,6 @@ def long_running_task(self):
 
     # Register the signal handler
     signal.signal(signal.SIGTERM, handle_signal)
-
-    # Simulate a long-running task
-    while True:
-        # Your task logic here
-        pass
-    
     
 def terminate_task(task_id):
     # Get the task result using the task ID

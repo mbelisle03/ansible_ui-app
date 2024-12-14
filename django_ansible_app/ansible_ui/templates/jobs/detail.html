@@ -20,8 +20,6 @@
             <pre class="bg-light p-3 border rounded">
                 {{ job.output|default:"No output available yet." }}
             </pre>
-            <pre class="bg-light p-3 border rounded">{{ job.output }}</pre>
-
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Terminate Job</button>
