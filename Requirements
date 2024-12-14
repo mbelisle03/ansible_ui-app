@@ -1,0 +1,24 @@
+Requirements
+#Setup Python Environment
+python3 -m venv .venv
+sudo apt install python3-pip
+pip install django ansible python-telegram-bot
+
+#Setup Celery and Redis to handle execution and message brokage
+pip install celery
+pip -m celery worker
+pip install redis-server
+pip install redis-server
+
+celery -A django_ansible_app worker --loglevel=info
+
+Reference:
+https://realpython.com/asynchronous-tasks-with-django-and-celery/
+
+#Start web server
+python3 manage.py runserver
+
+#Install relevant Ansible dependencies
+ansible-galaxy collection install cisco.ios
+Reference: https://galaxy.ansible.com/ui/repo/published/cisco/ios/
+
